@@ -532,3 +532,14 @@
         grid-template-columns: 1fr;
     }
 }
+
+/* EMI hint */
+.emiHint {
+    font-size: var(--fs-sm);
+    color: var(--clr-secondary);
+    margin-top: var(--sp-1);
+    padding: var(--sp-2) var(--sp-3);
+    background: rgba(63, 55, 201, 0.06);
+    border-radius: var(--radius-sm);
+    display: inline-block;
+}

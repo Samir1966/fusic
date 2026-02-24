@@ -7,10 +7,17 @@ import styles from './checkout.module.css';
 const paymentMethods = [
     { id: 'upi', label: 'UPI', icon: '📱', desc: 'Google Pay, PhonePe, Paytm' },
     { id: 'card', label: 'Credit/Debit Card', icon: '💳', desc: 'Visa, Mastercard, RuPay' },
+    { id: 'emi', label: 'EMI (No-Cost)', icon: '📅', desc: 'Split into 3/6/9 months' },
     { id: 'netbanking', label: 'Net Banking', icon: '🏦', desc: 'All major banks' },
     { id: 'wallet', label: 'Wallets', icon: '👛', desc: 'Paytm, Amazon Pay, Mobikwik' },
-    { id: 'bnpl', label: 'Buy Now Pay Later', icon: '📅', desc: 'Simpl, LazyPay, ZestMoney' },
+    { id: 'bnpl', label: 'Buy Now Pay Later', icon: '💰', desc: 'Simpl, LazyPay, ZestMoney' },
     { id: 'cod', label: 'Cash on Delivery', icon: '💵', desc: 'Pay when you receive' },
+];
+
+const kiranaStores = [
+    { id: 'k1', name: 'Sharma General Store', distance: '0.8 km', address: 'Near Rajput Chowk, Main Road', timing: '8 AM – 10 PM' },
+    { id: 'k2', name: 'Gupta Kirana Corner', distance: '1.2 km', address: 'Opposite SBI Bank, Market Lane', timing: '7 AM – 9 PM' },
+    { id: 'k3', name: 'Patel Provision Store', distance: '2.1 km', address: 'Near Bus Stand, Station Road', timing: '9 AM – 11 PM' },
 ];
 
 export default function CheckoutPage() {
@@ -20,6 +27,9 @@ export default function CheckoutPage() {
     const [otp, setOtp] = useState('');
     const [otpSent, setOtpSent] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState('upi');
+    const [emiPlan, setEmiPlan] = useState(3);
+    const [deliveryType, setDeliveryType] = useState('home');
+    const [selectedStore, setSelectedStore] = useState('');
     const [address, setAddress] = useState({
         name: '', line1: '', line2: '', city: '', state: '', pincode: '',
     });
@@ -105,67 +115,115 @@ export default function CheckoutPage() {
                             </div>
                         )}
 
-                        {/* Step 2: Address */}
                         {step === 2 && (
                             <div className={styles.card}>
-                                <h3>📍 Delivery Address</h3>
-                                <div className={styles.form}>
-                                    <div className={styles.formRow}>
-                                        <div className={styles.field}>
-                                            <label>Full Name</label>
-                                            <input type="text" placeholder="Enter your name" value={address.name}
-                                                onChange={(e) => setAddress({ ...address, name: e.target.value })} />
-                                        </div>
-                                    </div>
-                                    <div className={styles.field}>
-                                        <label>Address Line 1</label>
-                                        <input type="text" placeholder="House no, Building, Street" value={address.line1}
-                                            onChange={(e) => setAddress({ ...address, line1: e.target.value })} />
-                                    </div>
-                                    <div className={styles.field}>
-                                        <label>Address Line 2</label>
-                                        <input type="text" placeholder="Area, Colony (optional)" value={address.line2}
-                                            onChange={(e) => setAddress({ ...address, line2: e.target.value })} />
-                                    </div>
-                                    <div className={styles.formRow}>
-                                        <div className={styles.field}>
-                                            <label>Pincode</label>
-                                            <input type="text" placeholder="6-digit pincode" maxLength={6} value={address.pincode}
-                                                onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })} />
-                                        </div>
-                                        <div className={styles.field}>
-                                            <label>City</label>
-                                            <input type="text" placeholder="City" value={address.city}
-                                                onChange={(e) => setAddress({ ...address, city: e.target.value })} />
-                                        </div>
-                                        <div className={styles.field}>
-                                            <label>State</label>
-                                            <select value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })}>
-                                                <option value="">Select</option>
-                                                <option>Odisha</option>
-                                                <option>Jharkhand</option>
-                                                <option>West Bengal</option>
-                                                <option>Bihar</option>
-                                                <option>Assam</option>
-                                                <option>Uttar Pradesh</option>
-                                                <option>Madhya Pradesh</option>
-                                                <option>Others</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={() => setStep(3)}>
-                                        Continue to Payment →
+                                <h3>📍 Delivery Options</h3>
+
+                                {/* Delivery Type Tabs */}
+                                <div className={styles.deliveryTabs}>
+                                    <button
+                                        className={`${styles.deliveryTab} ${deliveryType === 'home' ? styles.deliveryTabActive : ''}`}
+                                        onClick={() => setDeliveryType('home')}
+                                    >
+                                        🏠 Home Delivery
+                                    </button>
+                                    <button
+                                        className={`${styles.deliveryTab} ${deliveryType === 'kirana' ? styles.deliveryTabActive : ''}`}
+                                        onClick={() => setDeliveryType('kirana')}
+                                    >
+                                        🏪 Kirana Store Pickup
                                     </button>
                                 </div>
+
+                                {deliveryType === 'home' && (
+                                    <div className={styles.form}>
+                                        <div className={styles.formRow}>
+                                            <div className={styles.field}>
+                                                <label>Full Name</label>
+                                                <input type="text" placeholder="Enter your name" value={address.name}
+                                                    onChange={(e) => setAddress({ ...address, name: e.target.value })} />
+                                            </div>
+                                        </div>
+                                        <div className={styles.field}>
+                                            <label>Address Line 1</label>
+                                            <input type="text" placeholder="House no, Building, Street" value={address.line1}
+                                                onChange={(e) => setAddress({ ...address, line1: e.target.value })} />
+                                        </div>
+                                        <div className={styles.field}>
+                                            <label>Address Line 2</label>
+                                            <input type="text" placeholder="Area, Colony (optional)" value={address.line2}
+                                                onChange={(e) => setAddress({ ...address, line2: e.target.value })} />
+                                        </div>
+                                        <div className={styles.formRow}>
+                                            <div className={styles.field}>
+                                                <label>Pincode</label>
+                                                <input type="text" placeholder="6-digit pincode" maxLength={6} value={address.pincode}
+                                                    onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label>City</label>
+                                                <input type="text" placeholder="City" value={address.city}
+                                                    onChange={(e) => setAddress({ ...address, city: e.target.value })} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label>State</label>
+                                                <select value={address.state} onChange={(e) => setAddress({ ...address, state: e.target.value })}>
+                                                    <option value="">Select</option>
+                                                    <option>Odisha</option>
+                                                    <option>Jharkhand</option>
+                                                    <option>West Bengal</option>
+                                                    <option>Bihar</option>
+                                                    <option>Assam</option>
+                                                    <option>Uttar Pradesh</option>
+                                                    <option>Madhya Pradesh</option>
+                                                    <option>Others</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={() => setStep(3)}>
+                                            Continue to Payment →
+                                        </button>
+                                    </div>
+                                )}
+
+                                {deliveryType === 'kirana' && (
+                                    <div className={styles.kiranaSection}>
+                                        <p className={styles.kiranaInfo}>📦 Pick up from a nearby store — <strong>save ₹49 on shipping!</strong></p>
+                                        <div className={styles.kiranaList}>
+                                            {kiranaStores.map(store => (
+                                                <button
+                                                    key={store.id}
+                                                    className={`${styles.kiranaCard} ${selectedStore === store.id ? styles.kiranaActive : ''}`}
+                                                    onClick={() => setSelectedStore(store.id)}
+                                                >
+                                                    <div className={styles.kiranaHeader}>
+                                                        <span className={styles.kiranaName}>{store.name}</span>
+                                                        <span className={styles.kiranaDistance}>{store.distance}</span>
+                                                    </div>
+                                                    <p className={styles.kiranaAddr}>{store.address}</p>
+                                                    <p className={styles.kiranaTiming}>⏰ {store.timing}</p>
+                                                    <span className={styles.kiranaRadio}>{selectedStore === store.id ? '◉' : '○'}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={() => setStep(3)} disabled={!selectedStore}>
+                                            Continue to Payment →
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         )}
 
-                        {/* Step 3: Payment */}
                         {step === 3 && (
                             <div className={styles.card}>
                                 <h3>💳 Payment Method</h3>
+                                {total >= 999 && (
+                                    <div className={styles.emiBanner}>
+                                        🎉 No-Cost EMI available from <strong>₹{Math.ceil(total / 3)}/month</strong>
+                                    </div>
+                                )}
                                 <div className={styles.paymentList}>
-                                    {paymentMethods.map(pm => (
+                                    {paymentMethods.filter(pm => total >= 999 || pm.id !== 'emi').map(pm => (
                                         <button
                                             key={pm.id}
                                             className={`${styles.paymentOption} ${selectedPayment === pm.id ? styles.paymentActive : ''}`}
@@ -182,8 +240,30 @@ export default function CheckoutPage() {
                                         </button>
                                     ))}
                                 </div>
+
+                                {/* EMI Plan Selector */}
+                                {selectedPayment === 'emi' && (
+                                    <div className={styles.emiSection}>
+                                        <h4>Select EMI Plan</h4>
+                                        <div className={styles.emiPlans}>
+                                            {[3, 6, 9].map(months => (
+                                                <button
+                                                    key={months}
+                                                    className={`${styles.emiPlan} ${emiPlan === months ? styles.emiPlanActive : ''}`}
+                                                    onClick={() => setEmiPlan(months)}
+                                                >
+                                                    <span className={styles.emiMonths}>{months} months</span>
+                                                    <span className={styles.emiAmount}>₹{Math.ceil(total / months)}/mo</span>
+                                                    <span className={styles.emiTotal}>Total: ₹{total}</span>
+                                                    {months === 3 && <span className={styles.emiTag}>POPULAR</span>}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
                                 <button className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: '16px' }}>
-                                    Pay ₹{total} →
+                                    {selectedPayment === 'emi' ? `Start EMI ₹${Math.ceil(total / emiPlan)}/mo` : `Pay ₹${total}`} →
                                 </button>
                                 <p className={styles.secureNote}>🔒 100% secure payment. Your data is encrypted.</p>
                             </div>

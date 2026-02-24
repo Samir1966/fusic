@@ -1,5 +1,6 @@
 import './globals.css';
 import { CartProvider } from '@/context/CartContext';
+import { LanguageProvider } from '@/context/LanguageContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CartDrawer from '@/components/CartDrawer';
@@ -24,22 +25,24 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body>
-        <CartProvider>
-          <Header />
-          <main>{children}</main>
-          <Footer />
-          <CartDrawer />
-          {/* WhatsApp Float */}
-          <a
-            href="https://wa.me/919876543210?text=Hi%20FUSIC!%20I%20want%20to%20shop"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="whatsapp-float"
-            aria-label="Chat on WhatsApp"
-          >
-            💬
-          </a>
-        </CartProvider>
+        <LanguageProvider>
+          <CartProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+            <CartDrawer />
+            {/* WhatsApp Float */}
+            <a
+              href="https://wa.me/919876543210?text=Hi%20FUSIC!%20I%20want%20to%20shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="whatsapp-float"
+              aria-label="Chat on WhatsApp"
+            >
+              💬
+            </a>
+          </CartProvider>
+        </LanguageProvider>
       </body>
     </html>
   );

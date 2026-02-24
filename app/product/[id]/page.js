@@ -111,6 +111,9 @@ export default function ProductPage() {
                             <span className={styles.discount}>{product.discount}% OFF</span>
                         </div>
                         <p className={styles.tax}>Inclusive of all taxes</p>
+                        {product.price >= 999 && (
+                            <p className={styles.emiHint}>📅 No-Cost EMI from <strong>₹{Math.ceil(product.price / 3)}/month</strong></p>
+                        )}
 
                         {/* Colors */}
                         <div className={styles.optionGroup}>

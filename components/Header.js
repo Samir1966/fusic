@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { useCart } from '@/context/CartContext';
+import { useLanguage } from '@/context/LanguageContext';
 import Link from 'next/link';
 import styles from './Header.module.css';
 
@@ -10,12 +11,6 @@ const languages = [
     { code: 'bn', label: 'বাংলা' },
     { code: 'te', label: 'తెలుగు' },
     { code: 'od', label: 'ଓଡ଼ିଆ' },
-];
-
-const trustBadges = [
-    { icon: '📦', text: 'COD Available' },
-    { icon: '↩️', text: 'Free Returns' },
-    { icon: '⚡', text: 'Fast Delivery' },
 ];
 
 const searchSuggestions = [
@@ -30,11 +25,11 @@ const searchSuggestions = [
 
 export default function Header() {
     const { cartCount, setIsCartOpen } = useCart();
+    const { language, changeLanguage, t } = useLanguage();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [showSearch, setShowSearch] = useState(false);
-    const [activeLang, setActiveLang] = useState('en');
     const searchRef = useRef(null);
 
     useEffect(() => {
@@ -66,19 +61,17 @@ export default function Header() {
                         {languages.map(lang => (
                             <button
                                 key={lang.code}
-                                className={`${styles.langBtn} ${activeLang === lang.code ? styles.langActive : ''}`}
-                                onClick={() => setActiveLang(lang.code)}
+                                className={`${styles.langBtn} ${language === lang.code ? styles.langActive : ''}`}
+                                onClick={() => changeLanguage(lang.code)}
                             >
                                 {lang.label}
                             </button>
                         ))}
                     </div>
                     <div className={styles.trustBadges}>
-                        {trustBadges.map((badge, i) => (
-                            <span key={i} className={styles.trustBadge}>
-                                <span>{badge.icon}</span> {badge.text}
-                            </span>
-                        ))}
+                        <span className={styles.trustBadge}><span>📦</span> {t('trust.cod')}</span>
+                        <span className={styles.trustBadge}><span>↩️</span> {t('trust.returns')}</span>
+                        <span className={styles.trustBadge}><span>⚡</span> {t('trust.delivery')}</span>
                     </div>
                 </div>
             </div>
@@ -94,12 +87,12 @@ export default function Header() {
 
                     {/* Desktop Nav */}
                     <nav className={`${styles.nav} hide-mobile`}>
-                        <Link href="/shop?category=men" className={styles.navLink}>Men</Link>
-                        <Link href="/shop?category=women" className={styles.navLink}>Women</Link>
-                        <Link href="/shop?category=oversized" className={styles.navLink}>Oversized</Link>
-                        <Link href="/shop?category=hoodies" className={styles.navLink}>Hoodies</Link>
+                        <Link href="/shop?category=men" className={styles.navLink}>{t('nav.men')}</Link>
+                        <Link href="/shop?category=women" className={styles.navLink}>{t('nav.women')}</Link>
+                        <Link href="/shop?category=oversized" className={styles.navLink}>{t('nav.oversized')}</Link>
+                        <Link href="/shop?category=hoodies" className={styles.navLink}>{t('nav.hoodies')}</Link>
                         <Link href="/shop?category=under-999" className={styles.navLink}>
-                            Under ₹999 <span className={styles.hotBadge}>HOT</span>
+                            {t('nav.under999')} <span className={styles.hotBadge}>HOT</span>
                         </Link>
                     </nav>
 
