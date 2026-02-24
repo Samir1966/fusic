@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { products } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
@@ -12,6 +12,14 @@ const mockOrders = [
 ];
 
 export default function AccountPage() {
+    return (
+        <Suspense fallback={<div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading...</div>}>
+            <AccountContent />
+        </Suspense>
+    );
+}
+
+function AccountContent() {
     const searchParams = useSearchParams();
     const initialTab = searchParams.get('tab') || 'profile';
     const [activeTab, setActiveTab] = useState(initialTab);
