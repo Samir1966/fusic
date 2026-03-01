@@ -1,7 +1,8 @@
 'use client';
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { products, categories } from '@/data/products';
+import { categories } from '@/data/products';
+import { normalizeProduct } from '@/lib/normalize';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import styles from './shop.module.css';
@@ -18,25 +19,42 @@ function ShopContent() {
     const searchParams = useSearchParams();
     const categoryParam = searchParams.get('category') || 'all';
     const [sortBy, setSortBy] = useState('trending');
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    // Fetch products from Supabase via API
+    useEffect(() => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (categoryParam !== 'all' && categoryParam !== 'under-999' && categoryParam !== 'oversized' && categoryParam !== 'hoodies') {
+            params.set('category', categoryParam);
+        }
+        params.set('limit', '100');
+
+        fetch(`/api/products?${params.toString()}`)
+            .then(r => r.json())
+            .then(data => {
+                let items = (data.products || []).map(normalizeProduct);
+
+                // Client-side filtering for special categories
+                if (categoryParam === 'under-999') {
+                    items = items.filter(p => p.price < 999);
+                } else if (categoryParam === 'oversized') {
+                    items = items.filter(p => p.subcategory === 'oversized' || p.fit === 'Oversized');
+                } else if (categoryParam === 'hoodies') {
+                    items = items.filter(p => p.subcategory === 'hoodies');
+                }
+
+                setProducts(items);
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, [categoryParam]);
 
     const currentCategory = categories.find(c => c.id === categoryParam);
 
-    // Filter products
-    let filtered = [...products];
-    if (categoryParam !== 'all') {
-        if (categoryParam === 'under-999') {
-            filtered = products.filter(p => p.price < 999);
-        } else if (categoryParam === 'oversized') {
-            filtered = products.filter(p => p.subcategory === 'oversized' || p.fit === 'Oversized');
-        } else if (categoryParam === 'hoodies') {
-            filtered = products.filter(p => p.subcategory === 'hoodies');
-        } else {
-            filtered = products.filter(p => p.category === categoryParam);
-        }
-    }
-
     // Sort
-    const sorted = [...filtered].sort((a, b) => {
+    const sorted = [...products].sort((a, b) => {
         switch (sortBy) {
             case 'price-low': return a.price - b.price;
             case 'price-high': return b.price - a.price;
@@ -63,7 +81,7 @@ function ShopContent() {
                     </div>
                     <div className={`container ${styles.heroContent}`}>
                         <h1 className={styles.heroTitle}>{currentCategory.name}</h1>
-                        <p className={styles.heroCount}>{filtered.length} Products</p>
+                        <p className={styles.heroCount}>{sorted.length} Products</p>
                     </div>
                 </div>
             )}
@@ -112,7 +130,9 @@ function ShopContent() {
                 </div>
 
                 {/* Product Grid */}
-                {sorted.length > 0 ? (
+                {loading ? (
+                    <div style={{ textAlign: 'center', padding: '60px 0', color: '#888' }}>Loading products...</div>
+                ) : sorted.length > 0 ? (
                     <div className={styles.grid}>
                         {sorted.map((product, i) => (
                             <ProductCard key={product.id} product={product} index={i} />

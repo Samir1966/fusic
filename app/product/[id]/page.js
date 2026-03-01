@@ -1,23 +1,49 @@
 'use client';
-import { useState } from 'react';
-import { products } from '@/data/products';
+import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { normalizeProduct } from '@/lib/normalize';
 import styles from './ProductPage.module.css';
 
 export default function ProductPage() {
     const params = useParams();
     const { addToCart } = useCart();
-    const product = products.find(p => p.slug === params.id) || products[0];
+
+    const [product, setProduct] = useState(null);
+    const [relatedProducts, setRelatedProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const [selectedSize, setSelectedSize] = useState('');
-    const [selectedColor, setSelectedColor] = useState(product.colorNames[0]);
+    const [selectedColor, setSelectedColor] = useState('');
     const [activeImage, setActiveImage] = useState(0);
     const [showSizeGuide, setShowSizeGuide] = useState(false);
     const [pincode, setPincode] = useState('');
     const [deliveryInfo, setDeliveryInfo] = useState(null);
     const [showTryAtHome, setShowTryAtHome] = useState(false);
+
+    useEffect(() => {
+        // Fetch product by slug (or ID)
+        Promise.all([
+            fetch(`/api/products/${params.id}`).then(r => r.json()),
+            fetch(`/api/products?limit=5`).then(r => r.json()) // for related products
+        ])
+            .then(([productData, relatedData]) => {
+                if (productData.product) {
+                    const normalizedProduct = normalizeProduct(productData.product);
+                    setProduct(normalizedProduct);
+                    setSelectedColor(normalizedProduct.colorNames?.[0] || '');
+
+                    // Set related products (excluding current one)
+                    let related = (relatedData.products || [])
+                        .map(normalizeProduct)
+                        .filter(p => p.id !== normalizedProduct.id);
+                    setRelatedProducts(related.slice(0, 4));
+                }
+                setLoading(false);
+            })
+            .catch(() => setLoading(false));
+    }, [params.id]);
 
     const handleAddToCart = () => {
         if (!selectedSize) {
@@ -39,13 +65,14 @@ export default function ProductPage() {
         if (pincode.length === 6) {
             setDeliveryInfo({
                 available: true,
-                date: 'Feb 27 — Mar 1',
+                date: 'Feb 27 — Mar 1', // In a real app, calculate based on pincode
                 cod: true,
             });
         }
     };
 
-    const relatedProducts = products.filter(p => p.id !== product.id && p.category === product.category).slice(0, 4);
+    if (loading) return <div style={{ textAlign: 'center', padding: '100px 0' }}>Loading product details...</div>;
+    if (!product) return <div style={{ textAlign: 'center', padding: '100px 0' }}>Product not found</div>;
 
     return (
         <div className={styles.page}>
@@ -107,8 +134,12 @@ export default function ProductPage() {
                         {/* Price */}
                         <div className={styles.priceBlock}>
                             <span className={styles.price}>₹{product.price}</span>
-                            <span className={styles.mrp}>MRP ₹{product.originalPrice}</span>
-                            <span className={styles.discount}>{product.discount}% OFF</span>
+                            {product.originalPrice > product.price && (
+                                <>
+                                    <span className={styles.mrp}>MRP ₹{product.originalPrice}</span>
+                                    <span className={styles.discount}>{product.discount}% OFF</span>
+                                </>
+                            )}
                         </div>
                         <p className={styles.tax}>Inclusive of all taxes</p>
                         {product.price >= 999 && (
@@ -116,41 +147,45 @@ export default function ProductPage() {
                         )}
 
                         {/* Colors */}
-                        <div className={styles.optionGroup}>
-                            <h4>Color: <span className={styles.selectedValue}>{selectedColor}</span></h4>
-                            <div className={styles.colorOptions}>
-                                {product.colors.map((color, i) => (
-                                    <button
-                                        key={i}
-                                        className={`${styles.colorBtn} ${selectedColor === product.colorNames[i] ? styles.colorActive : ''}`}
-                                        style={{ background: color, border: color === '#FFFFFF' || color === '#FAF7F2' ? '2px solid #ddd' : '2px solid transparent' }}
-                                        onClick={() => setSelectedColor(product.colorNames[i])}
-                                        title={product.colorNames[i]}
-                                    />
-                                ))}
+                        {product.colors && product.colors.length > 0 && (
+                            <div className={styles.optionGroup}>
+                                <h4>Color: <span className={styles.selectedValue}>{selectedColor}</span></h4>
+                                <div className={styles.colorOptions}>
+                                    {product.colors.map((color, i) => (
+                                        <button
+                                            key={i}
+                                            className={`${styles.colorBtn} ${selectedColor === product.colorNames[i] ? styles.colorActive : ''}`}
+                                            style={{ background: color, border: color === '#FFFFFF' || color === '#FAF7F2' ? '2px solid #ddd' : '2px solid transparent' }}
+                                            onClick={() => setSelectedColor(product.colorNames[i])}
+                                            title={product.colorNames[i]}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Sizes */}
-                        <div className={styles.optionGroup}>
-                            <div className={styles.sizeHeader}>
-                                <h4>Size: <span className={styles.selectedValue}>{selectedSize || 'Select'}</span></h4>
-                                <button className={styles.sizeGuideBtn} onClick={() => setShowSizeGuide(!showSizeGuide)}>
-                                    📏 Size Guide
-                                </button>
-                            </div>
-                            <div className={styles.sizeOptions}>
-                                {product.sizes.map(size => (
-                                    <button
-                                        key={size}
-                                        className={`${styles.sizeBtn} ${selectedSize === size ? styles.sizeActive : ''}`}
-                                        onClick={() => setSelectedSize(size)}
-                                    >
-                                        {size}
+                        {product.sizes && product.sizes.length > 0 && (
+                            <div className={styles.optionGroup}>
+                                <div className={styles.sizeHeader}>
+                                    <h4>Size: <span className={styles.selectedValue}>{selectedSize || 'Select'}</span></h4>
+                                    <button className={styles.sizeGuideBtn} onClick={() => setShowSizeGuide(!showSizeGuide)}>
+                                        📏 Size Guide
                                     </button>
-                                ))}
+                                </div>
+                                <div className={styles.sizeOptions}>
+                                    {product.sizes.map(size => (
+                                        <button
+                                            key={size}
+                                            className={`${styles.sizeBtn} ${selectedSize === size ? styles.sizeActive : ''}`}
+                                            onClick={() => setSelectedSize(size)}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
 
                         {/* Size Guide Modal */}
                         {showSizeGuide && (
@@ -180,9 +215,14 @@ export default function ProductPage() {
                         )}
 
                         {/* Stock */}
-                        {product.stock < 30 && (
+                        {product.stock > 0 && product.stock < 30 && (
                             <div className={styles.stockAlert}>
                                 🔥 Only {product.stock} left in stock — order soon!
+                            </div>
+                        )}
+                        {product.stock === 0 && (
+                            <div className={styles.stockAlert} style={{ color: '#FF4057', background: 'rgba(255,64,87,0.1)', borderColor: 'rgba(255,64,87,0.3)' }}>
+                                ❌ Out of stock
                             </div>
                         )}
 
@@ -241,8 +281,8 @@ export default function ProductPage() {
                             <h4>Product Details</h4>
                             <table className={styles.detailsTable}>
                                 <tbody>
-                                    <tr><td>Fabric</td><td>{product.fabric}</td></tr>
-                                    <tr><td>Fit</td><td>{product.fit}</td></tr>
+                                    <tr><td>Fabric</td><td>{product.fabric || 'Premium Cotton'}</td></tr>
+                                    <tr><td>Fit</td><td>{product.fit || 'Regular'}</td></tr>
                                     <tr><td>Neck</td><td>Round Neck</td></tr>
                                     <tr><td>Wash Care</td><td>Machine wash cold</td></tr>
                                     <tr><td>Country</td><td>Made in India 🇮🇳</td></tr>
@@ -257,7 +297,7 @@ export default function ProductPage() {
                     <div className={styles.related}>
                         <h2 className="section-title">You May Also Like</h2>
                         <div className={styles.relatedGrid}>
-                            {relatedProducts.map((p, i) => (
+                            {relatedProducts.map((p) => (
                                 <Link key={p.id} href={`/product/${p.slug}`} className={styles.relatedCard}>
                                     <div className={styles.relatedImage}>
                                         <img src={p.imageUrl} alt={p.name} className={styles.relatedImg} />
@@ -265,7 +305,7 @@ export default function ProductPage() {
                                     <h4>{p.name}</h4>
                                     <div className="price">
                                         <span className="price-current">₹{p.price}</span>
-                                        <span className="price-original">₹{p.originalPrice}</span>
+                                        {p.originalPrice > p.price && <span className="price-original">₹{p.originalPrice}</span>}
                                     </div>
                                 </Link>
                             ))}
@@ -278,14 +318,14 @@ export default function ProductPage() {
             <div className={styles.stickyBar}>
                 <div className={styles.stickyPrice}>
                     <span className={styles.stickyCurrentPrice}>₹{product.price}</span>
-                    <span className={styles.stickyOrigPrice}>₹{product.originalPrice}</span>
+                    {product.originalPrice > product.price && <span className={styles.stickyOrigPrice}>₹{product.originalPrice}</span>}
                 </div>
                 <div className={styles.stickyActions}>
-                    <button className="btn btn-secondary btn-lg" onClick={handleAddToCart}>
+                    <button className="btn btn-secondary btn-lg" onClick={handleAddToCart} disabled={product.stock === 0}>
                         🛒 Add to Cart
                     </button>
-                    <button className="btn btn-primary btn-lg" onClick={handleBuyNow}>
-                        ⚡ Buy Now
+                    <button className="btn btn-primary btn-lg" onClick={handleBuyNow} disabled={product.stock === 0}>
+                        {product.stock === 0 ? 'Out of Stock' : '⚡ Buy Now'}
                     </button>
                 </div>
             </div>

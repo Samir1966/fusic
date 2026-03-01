@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import styles from './checkout.module.css';
 
 const paymentMethods = [
@@ -21,7 +22,9 @@ const kiranaStores = [
 ];
 
 export default function CheckoutPage() {
-    const { items, cartTotal, cartSavings } = useCart();
+    const { items, cartTotal, cartSavings, clearCart } = useCart();
+    const router = useRouter();
+
     const [step, setStep] = useState(1);
     const [phone, setPhone] = useState('');
     const [otp, setOtp] = useState('');
@@ -31,23 +34,89 @@ export default function CheckoutPage() {
     const [deliveryType, setDeliveryType] = useState('home');
     const [selectedStore, setSelectedStore] = useState('');
     const [address, setAddress] = useState({
-        name: '', line1: '', line2: '', city: '', state: '', pincode: '',
+        name: '', line1: '', line2: '', city: '', state: '', pincode: '', email: ''
     });
 
+    const [placingOrder, setPlacingOrder] = useState(false);
+    const [orderSuccess, setOrderSuccess] = useState(null);
+
     const sendOtp = () => {
-        if (phone.length === 10) {
-            setOtpSent(true);
-        }
+        if (phone.length === 10) setOtpSent(true);
     };
 
     const verifyOtp = () => {
-        if (otp.length === 4) {
-            setStep(2);
-        }
+        if (otp.length === 4) setStep(2);
     };
 
     const shipping = cartTotal >= 599 ? 0 : 49;
     const total = cartTotal + shipping;
+
+    const handlePlaceOrder = async () => {
+        setPlacingOrder(true);
+        try {
+            // Map cart items to API format
+            const payload = {
+                name: deliveryType === 'kirana' ? 'Kirana Pickup Customer' : address.name,
+                phone: phone,
+                email: address.email || null,
+                address: deliveryType === 'kirana' ? kiranaStores.find(s => s.id === selectedStore)?.address : address.line1,
+                city: deliveryType === 'kirana' ? 'Local' : address.city,
+                state: deliveryType === 'kirana' ? 'Local' : address.state,
+                pincode: deliveryType === 'kirana' ? '000000' : address.pincode,
+                subtotal: cartTotal,
+                discountAmount: cartSavings || 0,
+                shippingCost: shipping || 0,
+                total: total,
+                paymentMethod: selectedPayment,
+                notes: '',
+                items: items.map(item => ({
+                    productId: item.id,
+                    name: item.name,
+                    imageUrl: item.imageUrl,
+                    quantity: item.quantity,
+                    size: item.size,
+                    color: item.color || item.colorNames?.[0] || 'Default',
+                    price: item.price
+                }))
+            };
+
+            const res = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setOrderSuccess(data.order.order_number);
+                clearCart();
+            } else {
+                alert(data.error || 'Failed to place order. Please try again.');
+            }
+        } catch (error) {
+            console.error('Checkout error:', error);
+            alert('Something went wrong. Please check your connection.');
+        } finally {
+            setPlacingOrder(false);
+        }
+    };
+
+    if (orderSuccess) {
+        return (
+            <div className="container">
+                <div className={styles.empty} style={{ marginTop: '4rem', padding: '4rem 1rem' }}>
+                    <span className={styles.emptyIcon} style={{ background: '#4CAF50', color: 'white' }}>🎉</span>
+                    <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Order Placed Successfully!</h2>
+                    <p style={{ fontSize: '1.2rem', color: '#888' }}>Your Order Number is <strong style={{ color: '#fff' }}>{orderSuccess}</strong></p>
+                    <p style={{ marginTop: '1rem', color: '#aaa', maxWidth: '400px', margin: '1rem auto' }}>
+                        We've received your order and are getting it ready. You'll receive an SMS confirmation shortly.
+                    </p>
+                    <Link href="/" className="btn btn-primary btn-lg" style={{ marginTop: '2rem' }}>Continue Shopping</Link>
+                </div>
+            </div>
+        );
+    }
 
     if (items.length === 0) {
         return (
@@ -65,7 +134,6 @@ export default function CheckoutPage() {
             <div className={styles.page}>
                 <h1 className={styles.pageTitle}>Checkout</h1>
 
-                {/* Progress */}
                 <div className={styles.progress}>
                     {['Login', 'Address', 'Payment'].map((s, i) => (
                         <div key={i} className={`${styles.progressStep} ${step > i ? styles.stepDone : ''} ${step === i + 1 ? styles.stepActive : ''}`}>
@@ -77,7 +145,6 @@ export default function CheckoutPage() {
 
                 <div className={styles.layout}>
                     <div className={styles.main}>
-                        {/* Step 1: Phone OTP */}
                         {step === 1 && (
                             <div className={styles.card}>
                                 <h3>📱 Login with Phone</h3>
@@ -107,7 +174,7 @@ export default function CheckoutPage() {
                                             onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
                                             className={styles.otpInput}
                                         />
-                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={verifyOtp}>
+                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={verifyOtp} disabled={otp.length < 4}>
                                             Verify & Continue →
                                         </button>
                                     </div>
@@ -118,8 +185,6 @@ export default function CheckoutPage() {
                         {step === 2 && (
                             <div className={styles.card}>
                                 <h3>📍 Delivery Options</h3>
-
-                                {/* Delivery Type Tabs */}
                                 <div className={styles.deliveryTabs}>
                                     <button
                                         className={`${styles.deliveryTab} ${deliveryType === 'home' ? styles.deliveryTabActive : ''}`}
@@ -140,30 +205,29 @@ export default function CheckoutPage() {
                                         <div className={styles.formRow}>
                                             <div className={styles.field}>
                                                 <label>Full Name</label>
-                                                <input type="text" placeholder="Enter your name" value={address.name}
-                                                    onChange={(e) => setAddress({ ...address, name: e.target.value })} />
+                                                <input type="text" placeholder="Enter your name" value={address.name} onChange={(e) => setAddress({ ...address, name: e.target.value })} />
+                                            </div>
+                                            <div className={styles.field}>
+                                                <label>Email (Optional)</label>
+                                                <input type="email" placeholder="For order tracking" value={address.email} onChange={(e) => setAddress({ ...address, email: e.target.value })} />
                                             </div>
                                         </div>
                                         <div className={styles.field}>
                                             <label>Address Line 1</label>
-                                            <input type="text" placeholder="House no, Building, Street" value={address.line1}
-                                                onChange={(e) => setAddress({ ...address, line1: e.target.value })} />
+                                            <input type="text" placeholder="House no, Building, Street" value={address.line1} onChange={(e) => setAddress({ ...address, line1: e.target.value })} />
                                         </div>
                                         <div className={styles.field}>
                                             <label>Address Line 2</label>
-                                            <input type="text" placeholder="Area, Colony (optional)" value={address.line2}
-                                                onChange={(e) => setAddress({ ...address, line2: e.target.value })} />
+                                            <input type="text" placeholder="Area, Colony (optional)" value={address.line2} onChange={(e) => setAddress({ ...address, line2: e.target.value })} />
                                         </div>
                                         <div className={styles.formRow}>
                                             <div className={styles.field}>
                                                 <label>Pincode</label>
-                                                <input type="text" placeholder="6-digit pincode" maxLength={6} value={address.pincode}
-                                                    onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })} />
+                                                <input type="text" placeholder="6-digit" maxLength={6} value={address.pincode} onChange={(e) => setAddress({ ...address, pincode: e.target.value.replace(/\D/g, '') })} />
                                             </div>
                                             <div className={styles.field}>
                                                 <label>City</label>
-                                                <input type="text" placeholder="City" value={address.city}
-                                                    onChange={(e) => setAddress({ ...address, city: e.target.value })} />
+                                                <input type="text" placeholder="City" value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} />
                                             </div>
                                             <div className={styles.field}>
                                                 <label>State</label>
@@ -173,14 +237,11 @@ export default function CheckoutPage() {
                                                     <option>Jharkhand</option>
                                                     <option>West Bengal</option>
                                                     <option>Bihar</option>
-                                                    <option>Assam</option>
-                                                    <option>Uttar Pradesh</option>
-                                                    <option>Madhya Pradesh</option>
                                                     <option>Others</option>
                                                 </select>
                                             </div>
                                         </div>
-                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={() => setStep(3)}>
+                                        <button className="btn btn-primary btn-lg" style={{ width: '100%' }} onClick={() => setStep(3)} disabled={!address.name || !address.line1 || !address.pincode || !address.city || !address.state}>
                                             Continue to Payment →
                                         </button>
                                     </div>
@@ -241,7 +302,6 @@ export default function CheckoutPage() {
                                     ))}
                                 </div>
 
-                                {/* EMI Plan Selector */}
                                 {selectedPayment === 'emi' && (
                                     <div className={styles.emiSection}>
                                         <h4>Select EMI Plan</h4>
@@ -262,27 +322,30 @@ export default function CheckoutPage() {
                                     </div>
                                 )}
 
-                                <button className="btn btn-primary btn-lg" style={{ width: '100%', marginTop: '16px' }}>
-                                    {selectedPayment === 'emi' ? `Start EMI ₹${Math.ceil(total / emiPlan)}/mo` : `Pay ₹${total}`} →
+                                <button
+                                    className="btn btn-primary btn-lg"
+                                    style={{ width: '100%', marginTop: '16px' }}
+                                    onClick={handlePlaceOrder}
+                                    disabled={placingOrder}
+                                >
+                                    {placingOrder ? 'Processing...' : (selectedPayment === 'emi' ? `Start EMI ₹${Math.ceil(total / emiPlan)}/mo` : `Pay ₹${total}`)} →
                                 </button>
                                 <p className={styles.secureNote}>🔒 100% secure payment. Your data is encrypted.</p>
                             </div>
                         )}
                     </div>
 
-                    {/* Order Summary */}
+                    {/* Order Summary Sidebar */}
                     <div className={styles.sidebar}>
                         <div className={styles.summaryCard}>
                             <h3>Order Summary</h3>
                             <div className={styles.summaryItems}>
                                 {items.map(item => (
                                     <div key={`${item.id}-${item.size}`} className={styles.summaryItem}>
-                                        <div className={styles.summaryItemImage} style={{ background: item.gradient }}>
-                                            <span>👕</span>
-                                        </div>
+                                        <img src={item.imageUrl} alt={item.name} className={styles.summaryItemImage} style={{ objectFit: 'cover' }} />
                                         <div className={styles.summaryItemInfo}>
                                             <p className={styles.summaryItemName}>{item.name}</p>
-                                            <p className={styles.summaryItemMeta}>{item.size} • Qty: {item.quantity}</p>
+                                            <p className={styles.summaryItemMeta}>{item.color} • {item.size} • Qty: {item.quantity}</p>
                                             <p className={styles.summaryItemPrice}>₹{item.price * item.quantity}</p>
                                         </div>
                                     </div>
