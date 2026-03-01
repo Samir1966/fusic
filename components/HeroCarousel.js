@@ -32,12 +32,19 @@ export default function HeroCarousel() {
             <div
                 className={styles.heroSlide}
                 key={current}
-                style={{ background: slide.gradient }}
             >
+                {/* Background photo */}
+                <img
+                    src={slide.bgImage}
+                    alt=""
+                    className={styles.heroBgImage}
+                />
+                {/* Gradient overlay */}
+                <div className={styles.heroOverlay} style={{ background: slide.gradient }}></div>
+
                 {/* Decorative elements */}
                 <div className={styles.floatingCircle1}></div>
                 <div className={styles.floatingCircle2}></div>
-                <div className={styles.floatingCircle3}></div>
                 <div className={styles.gridPattern}></div>
 
                 <div className={`container ${styles.heroContent}`}>
