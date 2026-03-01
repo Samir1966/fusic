@@ -7,6 +7,7 @@ import FestivalBundles from '@/components/FestivalBundles';
 import Recommendations from '@/components/Recommendations';
 import DesignYourTee from '@/components/DesignYourTee';
 import ReviewsUGC from '@/components/ReviewsUGC';
+import InstagramAds from '@/components/InstagramAds';
 import FabricStory from '@/components/FabricStory';
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <Recommendations />
       <DesignYourTee />
       <ReviewsUGC />
+      <InstagramAds />
       <FabricStory />
     </>
   );

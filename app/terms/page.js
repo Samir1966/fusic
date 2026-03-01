@@ -20,7 +20,7 @@ export default function TermsPage() {
 
                         <div className={styles.policyCard}>
                             <h3>👋 Welcome to FUSIC</h3>
-                            <p>By using fusic.in (the "Website"), you agree to these Terms and Conditions. FUSIC is owned and operated by FUSIC Fashion Pvt. Ltd., registered in Bhubaneswar, Odisha, India.</p>
+                            <p>By using fusic.store (the "Website"), you agree to these Terms and Conditions. FUSIC is owned and operated by FUSIC Fashion Pvt. Ltd., registered in Pattamundai, Kendrapara, Odisha, India.</p>
                             <p>If you don't agree with any part of these terms, please don't use our website. But we hope you stay — we've got great tees! 😄</p>
                         </div>
 
@@ -56,7 +56,7 @@ export default function TermsPage() {
 
                         <div className={styles.policyCard}>
                             <h3>🎨 Intellectual Property</h3>
-                            <p>All content on fusic.in — including but not limited to logos, designs, text, graphics, images, and software — is the property of FUSIC Fashion Pvt. Ltd. and protected under Indian Copyright Act, 1957.</p>
+                            <p>All content on fusic.store — including but not limited to logos, designs, text, graphics, images, and software — is the property of FUSIC Fashion Pvt. Ltd. and protected under Indian Copyright Act, 1957.</p>
                             <div className={styles.policyHighlight}>
                                 <p>⚠️ Unauthorized reproduction, distribution, or modification of our designs is strictly prohibited and may result in legal action.</p>
                             </div>
@@ -83,16 +83,16 @@ export default function TermsPage() {
 
                         <div className={styles.policyCard}>
                             <h3>🇮🇳 Governing Law</h3>
-                            <p>These Terms are governed by and construed in accordance with the laws of India. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in Bhubaneswar, Odisha.</p>
+                            <p>These Terms are governed by and construed in accordance with the laws of India. Any disputes arising from these terms shall be subject to the exclusive jurisdiction of the courts in Kendrapara, Odisha.</p>
                         </div>
 
                         <div className={styles.policyCard}>
                             <h3>📞 Contact Us</h3>
                             <p>For any questions about these Terms, please reach out:</p>
                             <ul>
-                                <li><strong>Email:</strong> legal@fusic.in</li>
-                                <li><strong>WhatsApp:</strong> +91 98765 43210</li>
-                                <li><strong>Office:</strong> FUSIC HQ, Innovation Hub, Bhubaneswar, Odisha 751024</li>
+                                <li><strong>Email:</strong> legal@fusic.store</li>
+                                <li><strong>WhatsApp:</strong> +91 70779 91009</li>
+                                <li><strong>Office:</strong> FUSIC Store, Pattamundai, Kendrapara, Odisha 754215</li>
                             </ul>
                         </div>
 

@@ -26,7 +26,7 @@ const faqs = [
             { q: 'What fabric do you use?', a: 'We use 100% combed cotton (180-240 GSM) for our tees, and 60/40 cotton-polyester fleece (380 GSM) for hoodies. All fabrics are pre-shrunk and bio-washed for a soft, premium feel that lasts 100+ washes.' },
             { q: 'How do I find my perfect size?', a: 'Check our detailed Size Guide page! We provide exact measurements in both inches and cm. Pro tip: Our oversized tees are designed to fit loose — if you want a snug oversized look, go with your regular size. For a truly baggy fit, go one size up.' },
             { q: 'Are your prints durable?', a: 'Yes! We use DTG (Direct to Garment) and screen printing techniques that are rated for 100+ washes without fading or cracking. We test each design rigorously before production.' },
-            { q: 'Do you offer custom/bulk orders?', a: 'Yes! For college fests, corporate events, or custom group orders (minimum 25 pieces), contact us at hello@fusic.in or WhatsApp. We offer special bulk pricing and can print your custom designs!' },
+            { q: 'Do you offer custom/bulk orders?', a: 'Yes! For college fests, corporate events, or custom group orders (minimum 25 pieces), contact us at hello@fusic.store or WhatsApp. We offer special bulk pricing and can print your custom designs!' },
         ],
     },
     {
@@ -89,7 +89,7 @@ export default function FAQPage() {
                     <div className={styles.policyCard} style={{ textAlign: 'center', background: 'linear-gradient(135deg, rgba(255,107,53,0.05) 0%, rgba(63,55,201,0.05) 100%)' }}>
                         <h3 style={{ justifyContent: 'center' }}>🤔 Still Have Questions?</h3>
                         <p>We're just a WhatsApp message away. Our team typically replies within 15 minutes!</p>
-                        <a href="https://wa.me/919876543210" className="btn btn-primary btn-lg" style={{ marginTop: '12px' }}>
+                        <a href="https://whatsapp.com/channel/0029Vb7SPnTL7UVcbJccAL1M" className="btn btn-primary btn-lg" style={{ marginTop: '12px' }}>
                             💬 Chat on WhatsApp
                         </a>
                     </div>

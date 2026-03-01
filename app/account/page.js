@@ -69,7 +69,7 @@ function AccountContent() {
                         <span>😎</span>
                     </div>
                     <h3 className={styles.userName}>FUSIC Fan</h3>
-                    <p className={styles.userPhone}>+91 {phone || '9876543210'}</p>
+                    <p className={styles.userPhone}>+91 {phone || '7077991009'}</p>
 
                     <nav className={styles.tabs}>
                         {tabs.map(tab => (

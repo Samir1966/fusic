@@ -54,7 +54,7 @@ export default function ReturnsPage() {
                         <div className={styles.policyCard}>
                             <h3>🔄 How to Return</h3>
                             <ol>
-                                <li><strong>Initiate:</strong> WhatsApp us at +91 98765 43210 with your order number and reason</li>
+                                <li><strong>Initiate:</strong> WhatsApp us at +91 70779 91009 with your order number and reason</li>
                                 <li><strong>Schedule:</strong> We'll arrange a free pickup within 24-48 hours</li>
                                 <li><strong>Pack:</strong> Place the item in the original packaging with tags intact</li>
                                 <li><strong>Hand Over:</strong> Give the package to our delivery partner</li>
@@ -101,7 +101,7 @@ export default function ReturnsPage() {
                             </div>
                         </div>
 
-                        <p className={styles.lastUpdated}>Last updated: February 2026 · Questions? WhatsApp +91 98765 43210</p>
+                        <p className={styles.lastUpdated}>Last updated: February 2026 · Questions? WhatsApp +91 70779 91009</p>
                     </div>
                 </div>
             </div>

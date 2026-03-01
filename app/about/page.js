@@ -24,7 +24,7 @@ const timeline = [
     },
     {
         year: 'The Platform 💻',
-        title: 'Launching fusic.in',
+        title: 'Launching fusic.store',
         desc: 'We built everything in-house — no Shopify templates, no borrowed aesthetics. Every pixel, every interaction designed for the Indian shopper. COD, UPI, WhatsApp order updates, festival drops, EMI for students — India-first, always.',
     },
     {

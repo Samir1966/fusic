@@ -1,0 +1,398 @@
+.section {
+    padding: var(--sp-16) 0;
+    background: var(--clr-bg);
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: var(--sp-12);
+}
+
+.igIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: var(--radius-xl);
+    background: linear-gradient(135deg, #F77737, #E1306C, #C13584, #833AB4, #5851DB);
+    color: #fff;
+    margin-bottom: var(--sp-4);
+}
+
+.title {
+    font-family: var(--font-display);
+    font-size: var(--fs-3xl);
+    font-weight: 800;
+    color: var(--clr-text);
+    margin-bottom: var(--sp-3);
+}
+
+.subtitle {
+    font-size: var(--fs-md);
+    color: var(--clr-muted);
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--sp-4);
+    margin-bottom: var(--sp-10);
+}
+
+/* ── Shared Card Styles ── */
+.adCard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    text-decoration: none;
+    transition: transform var(--dur-normal) var(--ease-out), box-shadow var(--dur-normal);
+    box-shadow: var(--shadow-md);
+    cursor: pointer;
+}
+
+.adCard:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.adHeadline {
+    font-family: var(--font-display);
+    font-size: var(--fs-xl);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    color: #fff;
+    padding: 0 var(--sp-5);
+}
+
+.headlineDark {
+    color: var(--clr-text);
+}
+
+.adTagline {
+    font-size: var(--fs-sm);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0 var(--sp-5);
+    line-height: 1.4;
+}
+
+.taglineDark {
+    color: var(--clr-muted);
+}
+
+.adImageWrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-4);
+}
+
+.adImage {
+    width: 80%;
+    height: auto;
+    max-height: 60%;
+    object-fit: contain;
+    border-radius: var(--radius-lg);
+    transition: transform var(--dur-normal) var(--ease-out);
+}
+
+.adCard:hover .adImage {
+    transform: scale(1.05);
+}
+
+.igHandle {
+    position: absolute;
+    bottom: var(--sp-3);
+    right: var(--sp-4);
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.5px;
+}
+
+.handleDark {
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.adDivider {
+    width: 60%;
+    height: 2px;
+    background: var(--clr-text);
+    margin: 0 var(--sp-5) var(--sp-3);
+}
+
+/* ── Card Type: Dark ── */
+.adDark {
+    background: #1a1a1a;
+    justify-content: space-between;
+    padding: var(--sp-6) 0;
+}
+
+.adDark .adImageWrap {
+    position: relative;
+}
+
+.adDark .adImageWrap::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70%;
+    height: 50%;
+    background: radial-gradient(ellipse, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+/* ── Card Type: Light ── */
+.adLight {
+    background: #f5f0eb;
+    justify-content: flex-start;
+    padding: var(--sp-6) 0 var(--sp-8);
+}
+
+.adLight .adHeadline {
+    margin-bottom: var(--sp-2);
+}
+
+/* ── Card Type: Split ── */
+.adSplit {
+    background: #e8e4df;
+    padding: 0;
+}
+
+.splitTop {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-4);
+}
+
+.splitTop .adImage {
+    width: 85%;
+    max-height: 100%;
+}
+
+.splitBottom {
+    background: #1a1a1a;
+    padding: var(--sp-6) var(--sp-5) var(--sp-8);
+}
+
+.splitBottom .adHeadline {
+    font-size: var(--fs-lg);
+    margin-bottom: var(--sp-2);
+    padding: 0;
+}
+
+.splitBottom .adTagline {
+    font-size: var(--fs-xs);
+    padding: 0;
+    margin-bottom: var(--sp-3);
+}
+
+.splitLine {
+    width: 60px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ── Card Type: Lifestyle ── */
+.adLifestyle {
+    padding: 0;
+    justify-content: flex-end;
+}
+
+.lifestyleBg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.adCard:hover .lifestyleBg {
+    transform: scale(1.08);
+}
+
+.lifestyleOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.7) 100%);
+    z-index: 1;
+}
+
+.lifestyleContent {
+    position: relative;
+    z-index: 2;
+    padding: var(--sp-6) var(--sp-5);
+}
+
+.lifestyleContent .adHeadline {
+    font-size: var(--fs-lg);
+    margin-bottom: var(--sp-2);
+    padding: 0;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.lifestyleContent .adTagline {
+    font-size: var(--fs-xs);
+    padding: 0;
+}
+
+/* ── Card Type: Product ── */
+.adProduct {
+    background: linear-gradient(180deg, #c8d6c4 0%, #e6d9c3 100%);
+    padding: 0;
+    justify-content: space-between;
+}
+
+.productImageWrap {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sp-6) var(--sp-4);
+}
+
+.productImageWrap .adImage {
+    width: 90%;
+    max-height: 90%;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
+}
+
+.productInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 var(--sp-4) var(--sp-3);
+    gap: var(--sp-2);
+}
+
+.productBadge {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-md);
+    padding: var(--sp-2) var(--sp-3);
+    display: flex;
+    flex-direction: column;
+}
+
+.productTitle {
+    font-family: var(--font-display);
+    font-size: var(--fs-sm);
+    font-weight: 800;
+    color: var(--clr-text);
+}
+
+.productSub {
+    font-size: 10px;
+    color: var(--clr-muted);
+}
+
+.productPrice {
+    font-family: var(--font-display);
+    font-size: var(--fs-lg);
+    font-weight: 800;
+    color: var(--clr-text);
+}
+
+.shopNowBtn {
+    margin: 0 var(--sp-4) var(--sp-6);
+    padding: var(--sp-3);
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: var(--fs-sm);
+    color: var(--clr-text);
+    background: #fff;
+    border: 2px solid var(--clr-text);
+    border-radius: var(--radius-md);
+    letter-spacing: 1px;
+    transition: all var(--dur-fast);
+}
+
+.adProduct:hover .shopNowBtn {
+    background: var(--clr-text);
+    color: #fff;
+}
+
+/* Follow CTA */
+.followCta {
+    text-align: center;
+}
+
+.followBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sp-3);
+    padding: var(--sp-4) var(--sp-8);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-md);
+    color: #fff;
+    background: linear-gradient(135deg, #F77737, #E1306C, #C13584, #833AB4);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    transition: all var(--dur-normal);
+    box-shadow: 0 4px 20px rgba(225, 48, 108, 0.3);
+}
+
+.followBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(225, 48, 108, 0.4);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--sp-3);
+    }
+
+    .adHeadline {
+        font-size: var(--fs-lg);
+    }
+
+    .title {
+        font-size: var(--fs-2xl);
+    }
+}
+
+@media (max-width: 480px) {
+    .grid {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--sp-2);
+    }
+
+    .adCard {
+        border-radius: var(--radius-lg);
+    }
+
+    .adHeadline {
+        font-size: var(--fs-md);
+        padding: 0 var(--sp-3);
+    }
+
+    .adTagline {
+        font-size: var(--fs-xs);
+        padding: 0 var(--sp-3);
+    }
+}

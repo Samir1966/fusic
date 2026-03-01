@@ -33,7 +33,7 @@ export default function RootLayout({ children }) {
             <CartDrawer />
             {/* WhatsApp Float */}
             <a
-              href="https://wa.me/919876543210?text=Hi%20FUSIC!%20I%20want%20to%20shop"
+              href="https://whatsapp.com/channel/0029Vb7SPnTL7UVcbJccAL1M"
               target="_blank"
               rel="noopener noreferrer"
               className="whatsapp-float"

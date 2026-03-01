@@ -20,7 +20,7 @@ const socials = [
     { name: 'Instagram', icon: '📸', href: '#' },
     { name: 'YouTube', icon: '▶️', href: '#' },
     { name: 'Twitter', icon: '🐦', href: '#' },
-    { name: 'WhatsApp', icon: '💬', href: '#' },
+    { name: 'WhatsApp', icon: '💬', href: 'https://whatsapp.com/channel/0029Vb7SPnTL7UVcbJccAL1M' },
 ];
 
 export default function Footer() {
@@ -88,9 +88,9 @@ export default function Footer() {
                         {/* Contact */}
                         <div className={styles.footerCol}>
                             <h4>Get In Touch</h4>
-                            <a href="mailto:hello@fusic.in">📧 hello@fusic.in</a>
-                            <a href="tel:+919876543210">📞 +91 98765 43210</a>
-                            <a href="#">💬 WhatsApp Us</a>
+                            <a href="mailto:hello@fusic.store">📧 hello@fusic.store</a>
+                            <a href="tel:+917077991009">📞 +91 70779 91009</a>
+                            <a href="https://whatsapp.com/channel/0029Vb7SPnTL7UVcbJccAL1M">💬 WhatsApp Us</a>
                             <div className={styles.appCta}>
                                 <p>📱 Download FUSIC App</p>
                                 <div className={styles.storeButtons}>

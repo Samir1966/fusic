@@ -62,15 +62,15 @@ export default function PrivacyPage() {
                                 <li><strong>Opt-out:</strong> Unsubscribe from marketing emails/SMS anytime</li>
                                 <li><strong>Correct:</strong> Update or fix any incorrect personal information</li>
                             </ul>
-                            <p>To exercise any of these rights, email us at <strong>privacy@fusic.in</strong> or WhatsApp us. We'll respond within 48 hours.</p>
+                            <p>To exercise any of these rights, email us at <strong>privacy@fusic.store</strong> or WhatsApp us. We'll respond within 48 hours.</p>
                         </div>
 
                         <div className={styles.policyCard}>
                             <h3>👶 Children's Privacy</h3>
-                            <p>FUSIC is intended for users aged 13 and above. We do not knowingly collect data from children under 13. If you believe we have collected data from a minor, please contact us immediately at privacy@fusic.in.</p>
+                            <p>FUSIC is intended for users aged 13 and above. We do not knowingly collect data from children under 13. If you believe we have collected data from a minor, please contact us immediately at privacy@fusic.store.</p>
                         </div>
 
-                        <p className={styles.lastUpdated}>Last updated: February 2026 · Questions? Email privacy@fusic.in</p>
+                        <p className={styles.lastUpdated}>Last updated: February 2026 · Questions? Email privacy@fusic.store</p>
                     </div>
                 </div>
             </div>

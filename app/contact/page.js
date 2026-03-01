@@ -43,7 +43,7 @@ export default function ContactPage() {
                                     </div>
                                     <div className={styles.inputGroup}>
                                         <label>Phone *</label>
-                                        <input type="tel" placeholder="+91 98765 43210" required value={form.phone}
+                                        <input type="tel" placeholder="+91 70779 91009" required value={form.phone}
                                             onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@ export default function ContactPage() {
                                 <div className={styles.contactCardIcon} style={{ background: 'rgba(37,211,102,0.1)' }}>💬</div>
                                 <div>
                                     <p className={styles.contactCardTitle}>WhatsApp (Fastest!)</p>
-                                    <p className={styles.contactCardText}>+91 98765 43210</p>
+                                    <p className={styles.contactCardText}>+91 70779 91009</p>
                                     <p className={styles.contactCardText}>Avg. response: 15 minutes</p>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@ export default function ContactPage() {
                                 <div className={styles.contactCardIcon} style={{ background: 'rgba(255,107,53,0.1)' }}>📧</div>
                                 <div>
                                     <p className={styles.contactCardTitle}>Email</p>
-                                    <p className={styles.contactCardText}>hello@fusic.in</p>
+                                    <p className={styles.contactCardText}>hello@fusic.store</p>
                                     <p className={styles.contactCardText}>Avg. response: 4 hours</p>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@ export default function ContactPage() {
                                 <div className={styles.contactCardIcon} style={{ background: 'rgba(63,55,201,0.1)' }}>📞</div>
                                 <div>
                                     <p className={styles.contactCardTitle}>Phone</p>
-                                    <p className={styles.contactCardText}>+91 98765 43210</p>
+                                    <p className={styles.contactCardText}>+91 70779 91009</p>
                                     <p className={styles.contactCardText}>Mon–Sat, 10 AM – 7 PM IST</p>
                                 </div>
                             </div>
@@ -111,7 +111,7 @@ export default function ContactPage() {
                                 <div className={styles.contactCardIcon} style={{ background: 'rgba(212,168,83,0.1)' }}>📸</div>
                                 <div>
                                     <p className={styles.contactCardTitle}>Social Media</p>
-                                    <p className={styles.contactCardText}>@fusic.in on Instagram</p>
+                                    <p className={styles.contactCardText}>@fusic.store on Instagram</p>
                                     <p className={styles.contactCardText}>DMs open 24/7</p>
                                 </div>
                             </div>
@@ -120,8 +120,8 @@ export default function ContactPage() {
                                 <div className={styles.contactCardIcon} style={{ background: 'rgba(255,64,87,0.1)' }}>🏢</div>
                                 <div>
                                     <p className={styles.contactCardTitle}>Office (Visit Us!)</p>
-                                    <p className={styles.contactCardText}>FUSIC HQ, Innovation Hub</p>
-                                    <p className={styles.contactCardText}>Bhubaneswar, Odisha, India 751024</p>
+                                    <p className={styles.contactCardText}>FUSIC Store</p>
+                                    <p className={styles.contactCardText}>Pattamundai, Kendrapara, Odisha 754215</p>
                                 </div>
                             </div>
                         </div>
