@@ -9,6 +9,7 @@ export default function AdminProducts() {
     const [showModal, setShowModal] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [total, setTotal] = useState(0);
+    const [uploadingImage, setUploadingImage] = useState(false);
     const [form, setForm] = useState({
         name: '', slug: '', category: 'men', subcategory: '', price: '', original_price: '',
         discount: 0, sizes: 'S,M,L,XL,XXL', colors: '#1a1a1a', color_names: 'Black',
@@ -77,6 +78,34 @@ export default function AdminProducts() {
         if (res.ok) {
             setShowModal(false);
             fetchProducts();
+        }
+    };
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingImage(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const res = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await res.json();
+
+            if (res.ok && data.url) {
+                setForm(prev => ({ ...prev, image_url: data.url }));
+            } else {
+                alert(data.error || 'Failed to upload image');
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+            alert('Something went wrong during upload.');
+        } finally {
+            setUploadingImage(false);
         }
     };
 
@@ -200,11 +229,45 @@ export default function AdminProducts() {
                                     </select>
                                 </div>
                             </div>
-                            <div className={styles.inputGroup}>
-                                <label>Image URL</label>
-                                <input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
+
+                            {/* Image Upload Area */}
+                            <div className={styles.inputGroup} style={{ marginTop: '1rem' }}>
+                                <label>Product Image</label>
+                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                    {form.image_url ? (
+                                        <div style={{ width: '60px', height: '60px', flexShrink: 0, borderRadius: '4px', overflow: 'hidden', border: '1px solid #333' }}>
+                                            <img src={form.image_url} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        </div>
+                                    ) : (
+                                        <div style={{ width: '60px', height: '60px', flexShrink: 0, borderRadius: '4px', background: '#222', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px dashed #444', color: '#666' }}>
+                                            📷
+                                        </div>
+                                    )}
+                                    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                disabled={uploadingImage}
+                                                style={{ display: 'none' }}
+                                                id="image-upload-input"
+                                            />
+                                            <label htmlFor="image-upload-input" className={styles.secondaryBtn} style={{ display: 'inline-block', cursor: uploadingImage ? 'wait' : 'pointer' }}>
+                                                {uploadingImage ? '⏳ Uploading...' : '📁 Upload Image from PC'}
+                                            </label>
+                                        </div>
+                                        <input
+                                            placeholder="Or paste an image URL here..."
+                                            value={form.image_url}
+                                            onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                                            style={{ width: '100%', fontSize: '0.9rem' }}
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div className={styles.inputGroup}>
+
+                            <div className={styles.inputGroup} style={{ marginTop: '1rem' }}>
                                 <label>Description</label>
                                 <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
                             </div>
