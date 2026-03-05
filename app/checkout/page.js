@@ -39,6 +39,32 @@ export default function CheckoutPage() {
 
     const [placingOrder, setPlacingOrder] = useState(false);
     const [orderSuccess, setOrderSuccess] = useState(null);
+    const [user, setUser] = useState(null);
+
+    // Fetch user session on load
+    useEffect(() => {
+        fetch('/api/auth/customer')
+            .then(res => res.json())
+            .then(data => {
+                if (data.user) {
+                    setUser(data.user);
+                    const p = data.user.profile || {};
+                    // Pre-fill address and phone if available
+                    setAddress(prev => ({
+                        ...prev,
+                        name: p.name || prev.name,
+                        line1: p.address || prev.line1,
+                        city: p.city || prev.city,
+                        pincode: p.pincode || prev.pincode
+                    }));
+                    if (p.phone) setPhone(p.phone);
+
+                    // Skip Step 1 (Phone verification) if logged in
+                    setStep(2);
+                }
+            })
+            .catch(err => console.error("Session check failed", err));
+    }, []);
 
     const sendOtp = () => {
         if (phone.length === 10) setOtpSent(true);
@@ -58,7 +84,7 @@ export default function CheckoutPage() {
             const payload = {
                 name: deliveryType === 'kirana' ? 'Kirana Pickup Customer' : address.name,
                 phone: phone,
-                email: address.email || null,
+                email: user ? user.email : (address.email || null),
                 address: deliveryType === 'kirana' ? kiranaStores.find(s => s.id === selectedStore)?.address : address.line1,
                 city: deliveryType === 'kirana' ? 'Local' : address.city,
                 state: deliveryType === 'kirana' ? 'Local' : address.state,
@@ -145,10 +171,17 @@ export default function CheckoutPage() {
 
                 <div className={styles.layout}>
                     <div className={styles.main}>
-                        {step === 1 && (
+                        {step === 1 && !user && (
                             <div className={styles.card}>
-                                <h3>📱 Login with Phone</h3>
-                                <p className={styles.cardDesc}>Quick guest checkout — no account needed!</p>
+                                <h3>📱 Login or Guest Checkout</h3>
+                                <p className={styles.cardDesc}>Enter your phone number to continue.</p>
+
+                                <div style={{ marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255, 76, 41, 0.1)', borderRadius: '8px', border: '1px solid rgba(255, 76, 41, 0.2)' }}>
+                                    <strong>Want a faster checkout?</strong>
+                                    <p style={{ fontSize: '0.9rem', color: '#ccc', margin: '0.5rem 0' }}>Login to your FUSIC account to skip this step and use saved addresses.</p>
+                                    <Link href="/login" className="btn btn-secondary">Login / Create Account</Link>
+                                </div>
+
                                 <div className={styles.phoneRow}>
                                     <span className={styles.countryCode}>+91</span>
                                     <input

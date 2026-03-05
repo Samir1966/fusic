@@ -181,8 +181,8 @@ export default function Header() {
                         <Link href="/shop?category=hoodies" onClick={() => setIsMobileMenuOpen(false)}>Hoodies</Link>
                         <Link href="/shop?category=dresses" onClick={() => setIsMobileMenuOpen(false)}>Dresses</Link>
                         <Link href="/shop?category=under-999" onClick={() => setIsMobileMenuOpen(false)}>Under ₹999 🔥</Link>
-                        <Link href="/account" onClick={() => setIsMobileMenuOpen(false)}>My Account</Link>
-                        <Link href="/account?tab=wishlist" onClick={() => setIsMobileMenuOpen(false)}>Wishlist ♡</Link>
+                        <Link href="/account" onClick={() => setIsMobileMenuOpen(false)}>My Profile</Link>
+                        <Link href="/account" onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
                     </nav>
                 </div>
             )}
